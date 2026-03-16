@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 REM Check if the required parameters are passed (NAME and SOURCE)
-if "%~2" == "" (
+if "%~3" == "" (
     echo ERROR: Missing required parameters
     exit /b 1
 )
@@ -10,6 +10,7 @@ if "%~2" == "" (
 REM Extract parameters and remove quotes
 set NAME=%~1
 set SOURCE=%~2
+set FRAMEWORK=%~3
 
 REM Resolve source file:
 REM - If "%SOURCE%\%NAME%" exists, use that
@@ -30,7 +31,12 @@ if "%NAME:~-1%"=="\" set NAME=%NAME:~0,-1%
 if "%SOURCE:~-1%"=="\" set SOURCE=%SOURCE:~0,-1%
 
 REM Verify Pulsar deployment and Local plugin folder
-set PLUGIN_DIR=%AppData%\Pulsar\Legacy\Local
+if "%FRAMEWORK%"=="net10.0-windows" (
+    set PLUGIN_DIR=%AppData%\Pulsar\Interim\Local
+) else (
+    set PLUGIN_DIR=%AppData%\Pulsar\Legacy\Local
+)
+
 if not exist "%PLUGIN_DIR%" (
     echo "Missing Local plugin folder: %PLUGIN_DIR%"
     echo "Pulsar not installed?"

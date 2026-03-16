@@ -9,7 +9,7 @@ namespace ClientPlugin.Settings;
 public static class ConfigStorage
 {
     private static readonly string ConfigFileName = string.Concat(Plugin.Name, ".cfg");
-    private static string ConfigFilePath => Path.Combine(MyFileSystem.UserDataPath, "Storage", ConfigFileName);
+    private static string ConfigFilePath => Path.Combine(MyFileSystem.UserDataPath, "Storage\\PluginData", ConfigFileName);
 
     public static void Save(Config config)
     {

@@ -1,0 +1,20 @@
+{
+  "profiles": {
+    "Space Engineers (NET 10)": {
+      "commandName": "Executable",
+      "executablePath": "%AppData%\\Pulsar\\Interim.exe",
+      "commandLineArgs": "-sources -f12menu -debug",
+      "workingDirectory": "%AppData%\\Pulsar",
+      "nativeDebugging": false,
+      "hotReloadEnabled": true
+    },
+    "Space Engineers (NET Framework)": {
+      "commandName": "Executable",
+      "executablePath": "%AppData%\\Pulsar\\Legacy.exe",
+      "commandLineArgs": "-sources -f12menu -debug",
+      "workingDirectory": "%AppData%\\Pulsar",
+      "nativeDebugging": false,
+      "hotReloadEnabled": true
+    }
+  }
+}
