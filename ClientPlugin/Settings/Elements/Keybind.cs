@@ -114,7 +114,7 @@ internal class KeybindAttribute : Attribute, IElement
             messageText = MyCommonTexts.AssignControlMouse;
 
         // KEEN!!! MyGuiScreenOptionsControls.MyGuiControlAssignKeyMessageBox is PRIVATE!
-        var screenClass = typeof(MyGuiScreenOptionsControls).GetNestedType(
+        var screenClass = typeof(MyGuiScreenOptionsMouseKeyboard).GetNestedType(
             "MyGuiControlAssignKeyMessageBox",
             BindingFlags.NonPublic);
 
