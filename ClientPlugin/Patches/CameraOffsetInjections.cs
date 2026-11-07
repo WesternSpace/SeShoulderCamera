@@ -76,6 +76,13 @@ internal class CameraOffsetInjections
 
         IMyControllableEntity controlledEntity = MySession.Static.ControlledEntity;
 
+        __instance.m_target = headMatrix.Translation;
+
+        if (MySession.Static?.ControlledEntity is not MyCharacter character
+            || character.Closed
+            || character.IsDead)
+            return;
+
         __instance.m_target = GetRequiredCameraOffset(in headMatrix);
 
         // Stage 2: Handle camera rotation
@@ -85,7 +92,7 @@ internal class CameraOffsetInjections
         if (MyControllerHelper.IsControl(MyControllerHelper.CX_BASE, MyControlsSpace.LOOKAROUND, MyControlStateType.PRESSED, false, false))
             return;
 
-        
+
 
         __instance.ResetViewerAngle(GetRequiredRotationOffset(in __instance, in headMatrix, in controlledEntity));    
     }
