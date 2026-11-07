@@ -1,0 +1,12 @@
+File types under the `Data/Content` folder:
+- `*.scf` Scenario Configuration File: Stores metadata and startup settings for custom scenarios and worlds, such as description and thumbnail path.
+- `*.sbc` Space Engineers Binary/Component: Most common file type; XML files that define game objects like blocks, components, blueprints, and physical properties.
+- `*.sbl` Sandbox Level: Contains world-state data, often used for saved games or specific scenario level layouts.
+- `*.resx` Resource File: Standard .NET format used for localizing text strings (translations) within game's UI.
+- `*.vs` Visual Script: Source file for game's "Visual Scripting" system, allowing logic without writing raw C#.
+- `*.gsc` Game Scenario Configuration: Defines specific rules and logic triggers for a game scenario.
+- `*.json` JavaScript Object Notation: Used for platform-specific configurations or data interchange for external tools.
+- `*.xml` Extensible Markup Language: Used for general configuration, particularly defining font textures and UI layouts.
+- `*.mwl` Particle Library: Legacy format (shared with Medieval Engineers) used to store definitions for particle effects like smoke, fire, and sparks.
+- `*.hlsl` Shader Source: HLSL source of game's shaders. Shader "include" files (`*.hlsli`) not copied.
+- `*.vsc` Visual Script Component: Compiled or auxiliary component file that works in tandem with .vs files to handle script logic. 

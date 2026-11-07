@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "skills": {
+    "se-dev": {
+      "source": "CometWorks/skills",
+      "sourceType": "github",
+      "skillPath": "skills/se-dev/SKILL.md",
+      "computedHash": "ce76f7faf6dbdde8f300d75dd0d1c443ac577dec294a9e04e6716e49a9b6bedd"
+    },
+    "se-dev-game-code": {
+      "source": "CometWorks/skills",
+      "sourceType": "github",
+      "skillPath": "skills/se-dev-game-code/SKILL.md",
+      "computedHash": "e757db2d430a11de0cc35706d5a2d55973378700997b4e70cc9a8c44e6024962"
+    },
+    "se-dev-plugin": {
+      "source": "CometWorks/skills",
+      "sourceType": "github",
+      "skillPath": "skills/se-dev-plugin/SKILL.md",
+      "computedHash": "f352067207de485f83044128de91dc639f1d5450b72c2fe6cdfbc016fbb1f3bb"
+    },
+    "se-dev-plugin-review": {
+      "source": "CometWorks/skills",
+      "sourceType": "github",
+      "skillPath": "skills/se-dev-plugin-review/SKILL.md",
+      "computedHash": "496c39cddef16384aefb3626c28066f336e907ae10bbcd37b8953b3a18cc1e78"
+    }
+  }
+}

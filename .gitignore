@@ -360,3 +360,21 @@ MigrationBackup/
 
 # JetBrains Rider project files
 /.idea/
+
+# Claude Code
+.claude
+
+# Plugin specific
+*.il
+
+# Ignore generated skills files
+*busybox.exe
+*Prepare.DONE
+/.agents/skills/se-dev-game-code/Data
+/.agents/skills/se-dev-plugin/Data/MagnetarHub
+/.agents/skills/se-dev-plugin/Data/PluginHub
+
+# Font files copied into ClientPlugin/Fonts/Data/Fonts by the CopyExternalFonts build target (Keen's / Microsoft's files)
+ClientPlugin/Fonts/Data/Fonts/SpaceEngineers/space_engineers.ttf
+ClientPlugin/Fonts/Data/Fonts/MicrosoftYaHei/msyh.ttc
+ClientPlugin/Fonts/Data/Fonts/YuGothic/YuGothM.ttc

@@ -1,0 +1,14 @@
+@echo off
+REM Clean.bat - removes everything that Prepare.bat creates inside the skill
+REM folder. The Data folder (a junction to %USERPROFILE%\.se-dev\plugin) is
+REM preserved: only the junction itself is removed so the actual contents
+REM (Sources, PluginHub, MagnetarHub, CodeIndex) survive across runs.
+
+if exist Data rmdir Data
+
+if exist __pycache__ rmdir /s /q __pycache__
+if exist .venv       rmdir /s /q .venv
+if exist busybox.exe del busybox.exe
+if exist Prepare.log del Prepare.log
+if exist Prepare.DONE del Prepare.DONE
+exit /b 0

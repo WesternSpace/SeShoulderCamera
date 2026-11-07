@@ -1,0 +1,79 @@
+# Prepare Action
+
+> **Part of the se-dev-game-code skill.** Invoked to run the one-time preparation.
+
+**⚠️ IMPORTANT: Read [CommandExecution.md](../CommandExecution.md) for full guidance on running commands correctly.**
+
+Run `Prepare.bat` on Windows or `prepare.sh` on Linux to set up skill environment. Required before using skill.
+
+## Quick Check Status
+
+**IMPORTANT**: Use bash syntax, NOT Windows CMD syntax. Commands run through busybox (UNIX shell).
+
+```bash
+# ✅ CORRECT - Use bash syntax
+test -f "Prepare.DONE" && echo "READY" || echo "NOT_READY"
+```
+
+**Alternative**: Use the Glob tool to check for file existence instead of bash commands.
+
+```bash
+# ❌ WRONG - Don't use Windows CMD syntax (will NOT work)
+# if exist Prepare.DONE (echo READY) else (echo NOT_READY)
+```
+
+## Running Preparation
+
+If `Prepare.DONE` is missing:
+
+1. Review requirements and instructions in [Prepare.md](../Prepare.md).
+2. Execute preparation using skill folder as working directory:
+
+**Recommended approach (using workdir parameter):**
+```bash
+./prepare.sh (Linux)
+```
+
+**Alternative approaches:**
+
+Using PowerShell:
+```powershell
+cd C:\path\to\skill\folder
+.\Prepare.bat
+```
+
+Using CMD (change directory first):
+```cmd
+cd /d C:\path\to\skill\folder
+Prepare.bat
+```
+
+**⚠️ CRITICAL:** See [CommandExecution.md](../CommandExecution.md) for details on:
+- Why `&&` doesn't work in CMD
+- How to use workdir parameter correctly
+- Common mistakes and how to avoid them
+
+## Critical Rules
+
+- **DO NOT** create `Prepare.DONE` file yourself.
+- Preparation script creates it automatically only on successful run.
+- Creating it manually fakes success and leads to errors.
+
+## What Preparation Does
+
+Preparation script:
+- Verifies Python 3.11+ and command line `git` client available
+- Sets up Python virtual environment
+- On Windows downloads `busybox.exe`. On Linux uses native shell tools.
+- Installs `ilspycmd` for decompilation.
+- Creates `Data` junction/symlink pointing to `%USERPROFILE%\.se-dev\game-code\` on Windows, `~/.se-dev/game-code/` on Linux
+- Initialises local Git repository inside `Data/` on first run (with initial commit of `.gitignore`)
+- Detects current game version directly from binaries
+- Wipes `Data/Decompiled`, `Data/Content`, `Data/CodeIndex`, `Data/graphify-out` and `Data/game_files.json` whenever version differs from recorded one (older versions remain in local Git history)
+- Decompiles game DLLs to C# and optionally to IL code (needs uncommenting a block in `DecompileDll.sh` if required)
+- Copies game content data (indexable text files only, no binaries) into `Data/Content`, so definition changes can be reviewed in Git history
+- Hashes every original game file into `Data/game_files.json` (see [GameFileHashes.md](../GameFileHashes.md))
+- Records new game version in `Data/game_version.txt` and commits decompiled sources and content with version label as commit message
+- Builds code and content search indexes in `Data/CodeIndex`
+- Builds Graphify graph in `Data/graphify-out` when fast backend available or opted in (see [Graphify Graph](../SKILL.md#graphify-graph))
+- Verifies environment ready for use

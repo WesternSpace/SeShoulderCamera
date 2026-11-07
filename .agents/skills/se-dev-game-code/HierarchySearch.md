@@ -1,0 +1,233 @@
+# Class and Interface Hierarchy Search
+
+Search inheritance relationships, interface implementations, explore type hierarchies.
+
+**IMPORTANT:** All hierarchy queries return only **direct** relationships (immediate parent/children). To traverse deep hierarchies, use multiple queries.
+
+## Overview
+
+Hierarchy system tracks:
+- **Class inheritance** - Which classes inherit from which base classes
+- **Interface inheritance** - Which interfaces extend other interfaces
+- **Interface implementation** - Which classes/structs implement which interfaces
+
+## Hierarchy Tree Files
+
+Visual overview of complete hierarchies:
+
+- **`Data/CodeIndex/class_hierarchy.txt`** - Full class inheritance tree (large, do not load at once)
+- **`Data/CodeIndex/interface_hierarchy.txt`** - Full interface inheritance tree (very large, do not load at once)
+
+These files use tree-style formatting like `tree` command with fully-qualified type names.
+
+**Note:** Interface implementations not shown in tree files. Use search commands for that.
+
+## Search Commands
+
+```bash
+cd skills/se-dev-game-code
+uv run search_game_code.py <class|interface> <subcommand> <pattern>
+```
+
+### Class Hierarchy
+
+#### Find Parent Class
+
+```bash
+uv run search_game_code.py class parent MyGrid
+```
+
+Output: `Sandbox.Game.MyGrid:VRage.Game.Entity.MyEntity`
+
+Shows direct base class. Classes with no explicit parent show `System.Object`.
+
+#### Find Child Classes
+
+```bash
+uv run search_game_code.py class children MyEntity
+```
+
+Output:
+```
+VRage.Game.Entity.MyEntity|Sandbox.Game.Entities.(MyCharacter,MyGrid)
+VRage.Game.Entity.MyEntity|Sandbox.Game.MyProjectile
+```
+
+Shows all direct children in compressed namespace format, one line per namespace.
+
+#### Find Implemented Interfaces
+
+```bash
+uv run search_game_code.py class implements MyGrid
+```
+
+Output: `Sandbox.Game.MyGrid:VRage.ModAPI.IMyEntity;Sandbox.ModAPI.IMyGrid`
+
+Shows all interfaces implemented by class, separated by `;` (generic arguments contain commas).
+
+### Interface Hierarchy
+
+#### Find Parent Interface
+
+```bash
+uv run search_game_code.py interface parent IMyTerminalBlock
+```
+
+Output: `VRage.Game.ModAPI.IMyTerminalBlock:VRage.Game.ModAPI.IMyCubeBlock`
+
+Shows which interface this one extends.
+
+#### Find Child Interfaces
+
+```bash
+uv run search_game_code.py interface children IMyEntity
+```
+
+Output: `VRage.ModAPI.IMyEntity|VRage.Game.ModAPI.(IMyCubeGrid,IMyTerminalBlock)`
+
+Shows all interfaces that extend this one.
+
+#### Find Implementors
+
+```bash
+uv run search_game_code.py interface implementors IMyTerminalBlock
+```
+
+Output: `VRage.Game.ModAPI.IMyTerminalBlock|Sandbox.Game.(MyBatteryBlock,MyDoor,MyTerminalBlock)`
+
+Shows all classes/structs implementing the interface.
+
+## Compressed Output Format
+
+For queries returning multiple children/implementors, output groups types by their full namespace:
+
+- One output line per namespace, prefixed with `Parent|`
+- Types in same namespace share one level of parentheses: `Namespace.(Child1,Child2)`
+- Single type in a namespace has no parentheses: `Namespace.SubNamespace.SingleChild`
+- Types sorted alphabetically
+
+Example children `A.B.C.Class1`, `A.B.C.Class2`, `A.B.D.Class3`, `X.Y.Class4` of `P.Parent` print as:
+```
+P.Parent|A.B.C.(Class1,Class2)
+P.Parent|A.B.D.Class3
+P.Parent|X.Y.Class4
+```
+
+## Common Options
+
+All hierarchy commands support standard options:
+
+```bash
+-c, --count              Print only match count
+-l N, --limit N          Limit to N results
+-o N, --offset N         Skip first N results
+-n NS, --namespace NS    Filter by namespace prefix
+-i, --case-insensitive   Case-insensitive pattern matching
+```
+
+### Count Matches
+
+```bash
+uv run search_game_code.py -c interface implementors IMyTerminalBlock
+# Output: 47
+```
+
+For `parent` and `implements`: counts matching child types.
+For `children` and `implementors`: counts matching parent types (not total children).
+
+### Paginate Results
+
+```bash
+uv run search_game_code.py -l 10 interface implementors IMyTerminalBlock
+uv run search_game_code.py -l 10 -o 10 interface implementors IMyTerminalBlock
+```
+
+### Filter by Namespace
+
+```bash
+uv run search_game_code.py -n Sandbox.Game class parent ""
+uv run search_game_code.py -n VRage interface children IMyEntity
+```
+
+## Pattern Syntax
+
+Same as regular searches:
+
+| Prefix | Behavior |
+|--------|----------|
+| `text:X` or just `X` | Case-sensitive substring match (use `-i` for case-insensitive) |
+| `re:X` | Case-sensitive regex, Python regex syntax (use `-i` for case-insensitive) |
+
+Multiple patterns use AND logic.
+
+### Examples
+
+```bash
+# Find parent of any class matching pattern
+uv run search_game_code.py class parent "re:^My.*Block$"
+
+# Find children of classes starting with "My"
+uv run search_game_code.py class children "re:^My"
+
+# Find implementors of interfaces matching pattern
+uv run search_game_code.py interface implementors "re:^IMy.*Block$"
+```
+
+## Walking Hierarchies
+
+To traverse deep hierarchies, chain multiple queries.
+
+### Walk Up the Inheritance Chain
+
+```bash
+# Start with a class
+uv run search_game_code.py class parent MyGrid
+# Output: Sandbox.Game.MyGrid:VRage.Game.Entity.MyEntity
+
+# Find its parent
+uv run search_game_code.py class parent MyEntity
+# Output: VRage.Game.Entity.MyEntity:VRage.Game.Entity.MyEntityBase
+
+# Continue upward
+uv run search_game_code.py class parent MyEntityBase
+# Output: VRage.Game.Entity.MyEntityBase:System.Object
+```
+
+### Walk Down the Inheritance Chain
+
+```bash
+# Find direct children
+uv run search_game_code.py class children MyEntity
+# Output: VRage.Game.Entity.MyEntity|Sandbox.Game.(MyCharacter,MyGrid)
+
+# Then query each child for their children
+uv run search_game_code.py class children MyGrid
+# (if MyGrid has children)
+```
+
+### Explore Interface Hierarchies
+
+```bash
+# Walk up interface hierarchy
+uv run search_game_code.py interface parent IMyTerminalBlock
+uv run search_game_code.py interface parent IMyCubeBlock
+
+# Walk down interface hierarchy
+uv run search_game_code.py interface children IMyEntity
+uv run search_game_code.py interface children IMyCubeBlock
+```
+
+## Best Practices
+
+1. **Start searching for what you already know** - Start by searching for what you know from task description
+2. **Then drill down** - Use search commands for specific relationships
+3. **Iterate for depth** - Each query returns only direct relationships
+4. **Filter smartly** - Use `-n` to focus on specific namespaces
+5. **Count first** - Check `-c` before fetching if you expect large result sets
+6. **Combine searches** - After finding class, use standard search to explore its members
+
+## Next Steps
+
+- **Standard searches**: See `CodeSearch.md` for finding methods, fields, etc.
+- **Advanced techniques**: See `Advanced.md` for complex workflows
+- **Technical details**: See `Implementation.md` for CSV structures and indexing
