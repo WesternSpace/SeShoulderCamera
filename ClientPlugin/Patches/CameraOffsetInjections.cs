@@ -68,7 +68,7 @@ internal class CameraOffsetInjections
 
         currentlySwitchingSides = false;
 
-        if (MyInput.Static.IsNewKeyPressed(MyKeys.B))
+        if (MyInput.Static != null && MyInput.Static.IsNewKeyPressed(MyKeys.B))
         {
             UseLeftCam = !UseLeftCam;
             currentlySwitchingSides = true;
@@ -81,20 +81,35 @@ internal class CameraOffsetInjections
         if (MySession.Static?.ControlledEntity is not MyCharacter character
             || character.Closed
             || character.IsDead)
+        {
+            FlightCamera.Release();
             return;
-
+        }
         __instance.m_target = GetRequiredCameraOffset(in headMatrix);
 
-        // Stage 2: Handle camera rotation
+        // Stage 2 : Handle camera rotation for flying mode
+        if (FlightCamera.OwnsView(character))
+        {
+            FlightCamera.EnsureFromHead(character, in headMatrix);
+            Vector3D lateral = UseLeftCam
+                ? FlightCamera.Left * LEFT_OFFSET
+                : FlightCamera.Right * RIGHT_OFFSET;
+            if (character.IsCrouching)
+                lateral += headMatrix.Down * 0.55f;
+            __instance.m_target = headMatrix.Translation + lateral;
+            return;
+        }
+
+        // Stage 2: Handle camera rotation for walking mode
 
 
         // Don't proceed if the player is looking around
         if (MyControllerHelper.IsControl(MyControllerHelper.CX_BASE, MyControlsSpace.LOOKAROUND, MyControlStateType.PRESSED, false, false))
             return;
+        
 
 
-
-        __instance.ResetViewerAngle(GetRequiredRotationOffset(in __instance, in headMatrix, in controlledEntity));    
+        __instance.ResetViewerAngle(GetRequiredRotationOffset(in __instance, in headMatrix, in controlledEntity));
     }
 
     private static Vector3D GetRequiredCameraOffset(in MatrixD matrix)

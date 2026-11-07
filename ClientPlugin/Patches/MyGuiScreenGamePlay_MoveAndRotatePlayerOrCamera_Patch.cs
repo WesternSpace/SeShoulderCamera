@@ -33,11 +33,24 @@ internal class MyGuiScreenGamePlay_MoveAndRotatePlayerOrCamera_Patch
         return il;
     }
 
+    private static void Prefix()
+    {
+        if (MyInput.Static == null)
+            FlightCamera.StashLook(Vector2.Zero, 0f);
+        else
+            FlightCamera.StashLook(
+                MyInput.Static.GetRotation(),
+                MyInput.Static.GetRoll());
+    }
+
     private static void Inject(MyGuiScreenGamePlay __instance, ref Vector3 moveDirection, ref Vector2 rotation)
     {
 
         if (MySession.Static.ControlledEntity is MyCharacter character)
         {
+            if (character.JetpackRunning)
+                return;
+
             double horizLengthSq = moveDirection.X * moveDirection.X + moveDirection.Z * moveDirection.Z;
             if (horizLengthSq > 0 || character.IsIronSighted)
             {
